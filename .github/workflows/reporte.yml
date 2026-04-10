@@ -1,0 +1,61 @@
+name: Reporte hacienda bisemanal
+
+on:
+  schedule:
+    - cron: '0 11 * * 2'   # Martes 8:00 AM Argentina (UTC-3 → 11:00 UTC)
+    - cron: '0 11 * * 5'   # Viernes 8:00 AM Argentina
+  workflow_dispatch:        # Permite correr manualmente desde GitHub → Actions
+
+jobs:
+  generar-reporte:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependencias
+        run: pip install requests beautifulsoup4
+
+      - name: Generar reporte
+        run: python hacienda_scraper.py
+
+      - name: Publicar en GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          keep_files: true          # preserva historial.json entre deploys
+
+      # ── WhatsApp (CallMeBot — gratis, setup en SETUP.md) ──────────────────
+      - name: Notificar por WhatsApp
+        env:
+          WA_PHONE:  ${{ secrets.WHATSAPP_PHONE }}
+          WA_APIKEY: ${{ secrets.WHATSAPP_APIKEY }}
+          PAGES_URL: ${{ secrets.PAGES_URL }}
+        run: |
+          DIA=$(TZ='America/Argentina/Buenos_Aires' date +'%A %d/%m')
+          MSG="Reporte%20hacienda%20%E2%80%94%20${DIA//' '/'%20'}%0A${PAGES_URL}"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://api.callmebot.com/whatsapp.php?phone=${WA_PHONE}&text=${MSG}&apikey=${WA_APIKEY}")
+          echo "WhatsApp status: $STATUS"
+
+      # ── Telegram (opcional — descomentar y configurar TELEGRAM_* en Secrets)
+      # - name: Notificar por Telegram
+      #   env:
+      #     TG_TOKEN:  ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      #     TG_CHATID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      #     PAGES_URL: ${{ secrets.PAGES_URL }}
+      #   run: |
+      #     DIA=$(TZ='America/Argentina/Buenos_Aires' date +'%A %d/%m')
+      #     curl -s -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
+      #       -d "chat_id=${TG_CHATID}" \
+      #       -d "text=Reporte hacienda — ${DIA}%0A${PAGES_URL}" \
+      #       -d "parse_mode=HTML"
