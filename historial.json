@@ -1,0 +1,12 @@
+[
+  {
+    "fecha": "2026-04-10T20:30:07.806725",
+    "precios": {
+      "vaca": 2000,
+      "novillo": 3400,
+      "vaquillona": 3400,
+      "volumen": 9953
+    },
+    "tendencia": "ALZA"
+  }
+]

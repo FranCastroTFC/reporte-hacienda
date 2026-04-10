@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reporte Hacienda — Viernes 10 de abril 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F0EA;--surface:#fff;--border:rgba(0,0,0,.08);
+  --text:#1A1A18;--muted:#88887F;
+  --alza:#27500A;--alza-bg:#EAF3DE;
+  --baja:#791F1F;--baja-bg:#FCEBEB;
+  --warn:#633806;--warn-bg:#FAEEDA;
+  --info:#0C447C;--info-bg:#E6F1FB;
+  --r:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);
+      font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:16px 14px 48px}
+.mono{font-family:'DM Mono',monospace}
+
+.header{background:var(--surface);border-radius:var(--r);padding:20px 22px;
+          margin-bottom:12px;border:.5px solid var(--border);
+          display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.header h1{font-size:19px;font-weight:600;letter-spacing:-.3px}
+.header-sub{font-size:13px;color:var(--muted);margin-top:2px}
+.next-badge{font-size:11px;white-space:nowrap;background:var(--info-bg);color:var(--info);
+              padding:5px 12px;border-radius:20px}
+
+.senal{border-radius:var(--r);padding:20px 22px;margin-bottom:12px;border:.5px solid var(--border)}
+.senal-lbl{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;opacity:.7;margin-bottom:5px}
+.senal-val{font-size:30px;font-weight:700;letter-spacing:-.5px;margin-bottom:5px}
+.senal-rec{font-size:14px;opacity:.85}
+.senal-sep{border:none;border-top:.5px solid rgba(0,0,0,.12);margin:14px 0}
+.senal-fac{font-size:13px;opacity:.85}
+.senal-fac ul{padding-left:16px}
+.senal-fac li{margin-bottom:5px}
+
+.sec{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+       color:var(--muted);margin:18px 0 10px}
+.card{background:var(--surface);border-radius:var(--r);padding:18px 20px;
+        margin-bottom:12px;border:.5px solid var(--border)}
+
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.pcard{background:var(--surface);border-radius:12px;padding:14px 16px;border:.5px solid var(--border)}
+.plabel{font-size:12px;color:var(--muted);margin-bottom:2px}
+.pnum{font-size:24px;font-weight:600;letter-spacing:-.5px}
+.psub{font-size:11px;color:var(--muted)}
+
+.volcrd{background:var(--surface);border-radius:12px;padding:14px 16px;
+          border:.5px solid var(--border);margin-bottom:12px;
+          display:flex;align-items:center;gap:14px}
+.volnum{font-size:24px;font-weight:600}
+.voltag{font-size:12px;background:var(--warn-bg);color:var(--warn);
+          padding:3px 10px;border-radius:20px;margin-left:auto;white-space:nowrap}
+
+.chart-wrap{position:relative;width:100%;height:200px}
+.chart-wrap2{position:relative;width:100%;height:160px;margin-top:16px}
+.legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+.legend span{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
+.ldot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+.ef-row{display:flex;justify-content:space-between;align-items:flex-start;
+          padding:12px 0;border-bottom:.5px solid rgba(0,0,0,.06)}
+.ef-row:last-child{border-bottom:none}
+.ef-best .ef-nombre{color:var(--info)}
+.ef-nombre{font-size:15px;font-weight:600}
+.ef-piep,.ef-maxp{font-size:12px;color:var(--muted);margin-top:3px}
+.ef-costo{font-size:22px;font-weight:600;text-align:right;white-space:nowrap}
+.ef-unit{font-size:11px;font-weight:400;color:var(--muted);display:block;text-align:right}
+.tag-mejor{font-size:10px;background:var(--alza-bg);color:var(--alza);
+             padding:2px 8px;border-radius:10px;margin-left:7px;vertical-align:middle}
+
+.alerta{display:flex;align-items:flex-start;gap:9px;padding:9px 0;
+          border-bottom:.5px solid rgba(0,0,0,.06);font-size:13px;line-height:1.5}
+.alerta:last-child{border-bottom:none}
+.alerta-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.alerta-alza{background:var(--alza)}
+
+.regla{display:flex;justify-content:space-between;align-items:center;
+         padding:8px 10px;background:rgba(0,0,0,.03);border-radius:8px;
+         margin-bottom:6px;font-size:13px;gap:8px}
+.rbadge{font-size:11px;font-weight:500;padding:3px 9px;border-radius:10px;white-space:nowrap}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{padding:6px 8px;text-align:left;color:var(--muted);font-weight:500;font-size:11px;
+    border-bottom:.5px solid var(--border);text-transform:uppercase;letter-spacing:.04em}
+td{padding:8px;border-bottom:.5px solid rgba(0,0,0,.05)}
+tr:last-child td{border-bottom:none}
+.td-corte{font-weight:500}
+.td-prom{font-weight:600}
+
+.footer{text-align:center;font-size:12px;color:var(--muted);padding-top:20px}
+
+@media(max-width:420px){
+  .pgrid{grid-template-columns:repeat(2,1fr)}
+  .pnum,.volnum{font-size:20px}
+  .ef-costo{font-size:18px}
+  .header{flex-direction:column;gap:8px}
+  .senal-val{font-size:24px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="header">
+  <div>
+    <h1>Reporte de hacienda</h1>
+    <div class="header-sub">Viernes 10 de abril 2026</div>
+  </div>
+  <span class="next-badge">Próx.: Martes 14/04</span>
+</div>
+
+<div class="senal" style="background:#EAF3DE">
+  <div class="senal-lbl" style="color:#27500A">Señal para negociar</div>
+  <div class="senal-val" style="color:#27500A">▲ Tendencia a la alza</div>
+  <div class="senal-rec" style="color:#27500A">Cerrar compras esta semana antes de que suba más. No esperar.</div>
+  <hr class="senal-sep">
+  <div class="senal-fac" style="color:#27500A"><ul><li>Volumen bajo (9,953 cab. vs promedio 15,000) — oferta reducida presiona al alza</li><li>Fin de semana — precio tiende a subir +2% a +4% el lunes siguiente</li><li>Lluvia el miércoles 15/04 (34mm) — precio sube +1.5% a +3% en sesiones siguientes</li><li>Lluvia el jueves 16/04 (16mm) — precio sube +1.5% a +3% en sesiones siguientes</li></ul></div>
+</div>
+
+<div class="sec">Precios en pie — Mercado de Liniers</div>
+<div class="pgrid">
+  <div class="pcard">
+    <div class="plabel">Vaca</div>
+    <div class="pnum mono" style="color:#A32D2D">$2,000</div>
+    <div class="psub">$/kg vivo</div>
+  </div>
+  <div class="pcard">
+    <div class="plabel">Novillo</div>
+    <div class="pnum mono" style="color:#185FA5">$3,400</div>
+    <div class="psub">$/kg vivo</div>
+  </div>
+  <div class="pcard">
+    <div class="plabel">Vaquillona</div>
+    <div class="pnum mono" style="color:#3B6D11">$3,400</div>
+    <div class="psub">$/kg vivo</div>
+  </div>
+</div>
+
+<div class="volcrd">
+  <div>
+    <div class="psub">Volumen de entrada</div>
+    <div class="volnum mono">9,953 <span style="font-size:14px;font-weight:400;color:var(--muted)">cabezas</span></div>
+  </div>
+  <span class="voltag">Volumen bajo → presión alcista</span>
+</div>
+
+<div class="card">
+  <div class="sec" style="margin-top:0">Evolución de precios — últimas sesiones</div>
+  <div class="chart-wrap">
+    <canvas id="cP" role="img" aria-label="Evolución de precios de vaca, novillo y vaquillona">Tendencia de precios por sesión.</canvas>
+  </div>
+  <div class="legend">
+    <span><span class="ldot" style="background:#E24B4A"></span>Vaca</span>
+    <span><span class="ldot" style="outline:1.5px dashed #378ADD"></span>Novillo</span>
+    <span><span class="ldot" style="background:#639922"></span>Vaquillona</span>
+  </div>
+  <div class="sec" style="margin-top:20px">Volumen de entrada (cabezas)</div>
+  <div class="chart-wrap2">
+    <canvas id="cV" role="img" aria-label="Volumen de hacienda ingresada por sesión">Volumen histórico de entrada.</canvas>
+  </div>
+</div>
+
+<div class="sec">Eficiencia real — costo por kg a la mesa</div>
+<div class="card"><div class="ef-row ef-best">
+          <div class="ef-meta">
+            <span class="ef-nombre">Vaca</span><span class="tag-mejor">Mejor hoy</span>
+            <div class="ef-piep">Pie: <b>$2,000/kg</b> · faena 55% · mesa 66.0%</div>
+            
+          </div>
+          <div class="ef-costo">$3,030<span class="ef-unit">/kg mesa</span></div>
+        </div><div class="ef-row ">
+          <div class="ef-meta">
+            <span class="ef-nombre">Novillo</span>
+            <div class="ef-piep">Pie: <b>$3,400/kg</b> · faena 58% · mesa 67.5%</div>
+            <div class="ef-maxp">Máx equiv. vaca: <b>$2,045</b> (-39.9% vs precio actual)</div>
+          </div>
+          <div class="ef-costo">$5,037<span class="ef-unit">/kg mesa</span></div>
+        </div><div class="ef-row ">
+          <div class="ef-meta">
+            <span class="ef-nombre">Vaquillona</span>
+            <div class="ef-piep">Pie: <b>$3,400/kg</b> · faena 57% · mesa 66.8%</div>
+            <div class="ef-maxp">Máx equiv. vaca: <b>$2,023</b> (-40.5% vs precio actual)</div>
+          </div>
+          <div class="ef-costo">$5,094<span class="ef-unit">/kg mesa</span></div>
+        </div></div>
+
+<div class="sec">Alertas de mercado</div>
+<div class="card">
+  <div class="alerta"><span class="alerta-dot alerta-alza"></span><span>Fin de semana — precio tiende a subir +2% a +4% el lunes siguiente</span></div><div class="alerta"><span class="alerta-dot alerta-alza"></span><span>Lluvia el miércoles 15/04 (34mm) — precio sube +1.5% a +3% en sesiones siguientes</span></div><div class="alerta"><span class="alerta-dot alerta-alza"></span><span>Lluvia el jueves 16/04 (16mm) — precio sube +1.5% a +3% en sesiones siguientes</span></div>
+  <hr style="border:none;border-top:.5px solid rgba(0,0,0,.07);margin:14px 0">
+  <div class="sec" style="margin:0 0 10px">Reglas históricas detectadas</div>
+  <div class="regla"><span>Lluvia zona pampeana</span><span class="rbadge" style="background:var(--alza-bg);color:var(--alza)">Suba +1.5–3%</span></div>
+  <div class="regla"><span>Fin de semana largo</span><span class="rbadge" style="background:var(--alza-bg);color:var(--alza)">Suba +2–4%</span></div>
+  <div class="regla"><span>Volumen &lt;10.000 cab.</span><span class="rbadge" style="background:var(--alza-bg);color:var(--alza)">Suba +2–5%</span></div>
+  <div class="regla"><span>Volumen &gt;18.000 cab.</span><span class="rbadge" style="background:var(--baja-bg);color:var(--baja)">Baja −1–3%</span></div>
+  <div class="regla"><span>Post-lluvia + sol</span><span class="rbadge" style="background:var(--baja-bg);color:var(--baja)">Baja −0.5–2%</span></div>
+</div>
+
+<div class="sec">Precios en góndola — supermercados ($/kg)</div>
+<div class="card">
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Corte</th><th>Coto</th><th>Carrefour</th><th>Disco</th><th>Promedio</th></tr></thead>
+      <tbody><tr>
+          <td class="td-corte">Asado</td>
+          <td>$4,190<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$4,380<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$4,650<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td class="td-prom">$4,407</td>
+        </tr><tr>
+          <td class="td-corte">Vacío</td>
+          <td>$5,200<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$5,490<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$5,890<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td class="td-prom">$5,527</td>
+        </tr><tr>
+          <td class="td-corte">Cuadrada</td>
+          <td>$6,400<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$6,750<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$7,200<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td class="td-prom">$6,783</td>
+        </tr><tr>
+          <td class="td-corte">Nalga</td>
+          <td>$6,800<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$7,100<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$7,600<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td class="td-prom">$7,167</td>
+        </tr><tr>
+          <td class="td-corte">Bife de chorizo</td>
+          <td>$8,900<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$9,400<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$10,200<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td class="td-prom">$9,500</td>
+        </tr><tr>
+          <td class="td-corte">Bife de costilla</td>
+          <td>$9,200<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$9,800<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$10,800<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td class="td-prom">$9,933</td>
+        </tr><tr>
+          <td class="td-corte">Lomo</td>
+          <td>$12,500<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$13,200<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$14,500<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td class="td-prom">$13,400</td>
+        </tr><tr>
+          <td class="td-corte">Paleta</td>
+          <td>$4,800<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$5,100<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td>$5,400<sup style="color:#bbb;font-size:9px"> ref</sup></td>
+          <td class="td-prom">$5,100</td>
+        </tr></tbody>
+    </table>
+  </div>
+  <div style="font-size:11px;color:var(--muted);margin-top:10px"><sup>ref</sup> = referencia · live = scrapeado hoy</div>
+</div>
+
+<div class="footer">Datos: Mercado de Liniers · Open-Meteo · Actualizado automáticamente martes y viernes</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const L=["2026-04-10", "Hoy"];
+const V=[2000, 2000], N=[3400, 3400], Q=[3400, 3400], O=[9953, 9953];
+const gc='rgba(0,0,0,.06)', tc='#88887F';
+const fp=v=>'$'+v.toLocaleString('es-AR');
+
+new Chart(document.getElementById('cP'),{
+  type:'line',
+  data:{labels:L,datasets:[
+    {label:'Vaca',data:V,borderColor:'#E24B4A',backgroundColor:'transparent',
+      borderWidth:2,pointRadius:3,pointBackgroundColor:'#E24B4A',tension:.35},
+    {label:'Novillo',data:N,borderColor:'#378ADD',backgroundColor:'transparent',
+      borderWidth:2,borderDash:[5,3],pointRadius:3,pointStyle:'triangle',
+      pointBackgroundColor:'#378ADD',tension:.35},
+    {label:'Vaquillona',data:Q,borderColor:'#639922',backgroundColor:'transparent',
+      borderWidth:2,pointRadius:3,pointBackgroundColor:'#639922',tension:.35},
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{font:{size:11},color:tc,autoSkip:true,maxRotation:35},grid:{display:false}},
+      y:{ticks:{font:{size:11},color:tc,callback:fp},grid:{color:gc}}
+    }}
+});
+
+new Chart(document.getElementById('cV'),{
+  type:'bar',
+  data:{labels:L,datasets:[{
+    label:'Cabezas',data:O,
+    backgroundColor:O.map(v=>v<13000?'rgba(231,75,74,.55)':v>17000?'rgba(55,138,221,.55)':'rgba(136,135,128,.45)'),
+    borderRadius:4,borderWidth:0
+  }]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{font:{size:11},color:tc,autoSkip:true,maxRotation:35},grid:{display:false}},
+      y:{ticks:{font:{size:11},color:tc,callback:v=>(v/1000).toFixed(0)+'k'},grid:{color:gc}}
+    }}
+});
+</script>
+</body>
+</html>
