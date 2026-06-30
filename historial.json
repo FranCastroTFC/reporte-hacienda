@@ -1,11 +1,11 @@
 [
   {
-    "fecha": "2026-06-26T13:15:24.089340",
+    "fecha": "2026-06-30T13:03:25.569141",
     "precios": {
-      "vaca": 2100,
-      "novillo": 3100,
-      "vaquillona": 3600,
-      "volumen": 4815
+      "vaca": 2270,
+      "novillo": 4450,
+      "vaquillona": 4000,
+      "volumen": 4343
     },
     "tendencia": "ALZA"
   }
